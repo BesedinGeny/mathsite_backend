@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Column, Integer, DateTime, String, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 
-from app.conf.db.base_tablename_class import Base, BaseWithId
+from app.conf.db.base_tablename_class import Base
 
 if TYPE_CHECKING:
     from .user import User  # noqa: F401
@@ -12,24 +12,34 @@ if TYPE_CHECKING:
 SECURITY_SCHEMA = 'security'
 
 
-class Role(BaseWithId):
+class Role(Base):
     __tablename__ = "role"
     __table_args__ = {"schema": SECURITY_SCHEMA}
 
-    name = Column(String, unique=True,
-                  index=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
+    name = Column(
+        String,
+        unique=True,
+        index=True,
+        nullable=False,
+    )
     description = Column(String, nullable=False)
     access_level = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow())
     updated_at = Column(DateTime)
 
+    # user_id = Column(Integer, ForeignKey("security.user_x_role.user_id"))
+    # permission_id = Column(Integer, ForeignKey("security.permission_x_role.permission_id"))
     users = relationship("UserXRole", back_populates="role")
     permissions = relationship('PermissionXRole', back_populates="role")
 
 
-class Permission(BaseWithId):
+class Permission(Base):
     __tablename__ = "permission"
     __table_args__ = {"schema": SECURITY_SCHEMA}
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
     name = Column(String, unique=True, index=True, nullable=False)
     description = Column(String, nullable=True)

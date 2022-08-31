@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     # PostgreSQL Configuration
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "mathsite")
     POSTGRES_USER: str = os.getenv("POSTGRES_DB", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "0.0.0.0")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
 
