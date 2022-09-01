@@ -11,11 +11,6 @@ from app.conf.db.session import SessionLocal
 from app.conf.settings import settings
 
 
-@AuthJWT.load_config
-def get_config():
-    return settings
-
-
 def get_db() -> Generator:
     db = SessionLocal()
     try:

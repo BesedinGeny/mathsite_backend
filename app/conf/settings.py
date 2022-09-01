@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "mathsite")
     POSTGRES_USER: str = os.getenv("POSTGRES_DB", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
-    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "0.0.0.0")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "127.0.0.1")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
 
     DB_POOL_SIZE: int = int(os.getenv("DB_POOL_SIZE", "20"))
@@ -123,7 +123,7 @@ class CookiesSettings(BaseSettings):
     authjwt_cookie_csrf_protect: bool = False
 
     # Change to "lax" in production to make your website more secure from CSRF Attacks, default is None
-    authjwt_cookie_samesite: str = 'none'
+    authjwt_cookie_samesite: str = 'lax'
 
 
 cookies_settings = CookiesSettings()

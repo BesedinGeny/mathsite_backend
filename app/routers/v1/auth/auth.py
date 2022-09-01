@@ -38,12 +38,18 @@ async def login(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Inactive user")
 
-    payload = {'id': str(user.id),
-               'role': user.roles.role.name,
-               'permissions': [p.permission.name for p in user.roles.role.permissions]}
+    payload = {
+        'id': str(user.id),
+        'role': user.roles.role.name,
+        'permissions': [p.permission.name for p in user.roles.role.permissions]
+    }
 
-    access_token = Authorize.create_access_token(subject=json.dumps(payload))
-    refresh_token = Authorize.create_refresh_token(subject=json.dumps(payload))
+    access_token = Authorize.create_access_token(
+        subject=json.dumps(payload)
+    )
+    refresh_token = Authorize.create_refresh_token(
+        subject=json.dumps(payload)
+    )
 
     agent, platform, _ = user_agent_parser(user_agent, request)
     res = {"msg": "Success Logins!", 'agent': agent, 'platform': platform}

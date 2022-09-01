@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app import schemas
-from app.config.db import base  # noqa: F401
+from app.conf.db.session import engine
 from app.conf.permission_settings import (AVAILABLE_ROLES, AVAILABLE_PERMISSIONS,
                                           PERMISSION_X_ROLE)
 from app.conf.settings import settings
@@ -95,3 +95,8 @@ def init_db(db: Session) -> None:
         logging.info('End Create Superuser')
 
     logging.info('MINIO Bucket Creating done')
+
+
+if __name__ == '__main__':
+    with Session(engine) as session:
+        init_db(session)

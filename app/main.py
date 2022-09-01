@@ -1,6 +1,7 @@
 import uvicorn as uvicorn
+from fastapi_jwt_auth import AuthJWT
 
-from app.conf.settings import settings
+from app.conf.settings import cookies_settings, settings
 
 from fastapi import FastAPI
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -18,6 +19,19 @@ app = FastAPI(
 
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+origins = [
+    "http://localhost",
+    "http://0.0.0.0",
+
+    "http://localhost:8080",
+    "http://0.0.0.0:8080"
+]
+
+
+@AuthJWT.load_config
+def get_config():
+    return cookies_settings
 
 
 def run():
