@@ -11,13 +11,6 @@ from app.conf.settings import settings
 
 
 def init_db(db: Session) -> None:
-    # Tables should be created with Alembic migrations
-    # But if you don't want to use migrations, create
-    # the tables un-commenting the next line
-    # Base.metadata.create_all(bind=engine)
-
-    ############
-    # Init Roles
 
     logging.info('Start Creating Roles')
     for role_name, meta in AVAILABLE_ROLES.items():
@@ -46,13 +39,11 @@ def init_db(db: Session) -> None:
     logging.info('End Creating Permissions')
 
     logging.info('Start Adding the Permission to Role')
-    # Add permissions for Roles
-    # 1. Get All roles
+
     all_available_roles = crud.role.get_all(db)
-    # 2. Get All Accesses
+
     all_available_permissions = crud.permission.get_all(db)
 
-    # 3. Access->Permissions mapping
     map_permission = {item.name: item.id for item in all_available_permissions}
 
     for role in all_available_roles:
@@ -83,18 +74,16 @@ def init_db(db: Session) -> None:
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
         )
-        superuser = crud.user.create(db, obj_in=user_in)  # noqa: F841
+        superuser = crud.user.create(db, obj_in=user_in)
 
-        superuser_role_id = crud.role.get_by_name(db, name='MODERATOR').id
+        superuser_role_id = crud.role.get_by_name(db, name='SUPERUSER').id
 
         superuser_role_in = schemas.UserXRoleCreate(
             user_id=superuser.id,
             role_id=superuser_role_id
         )
-        crud.user_x_role.create(db, obj_in=superuser_role_in)  # noqa: F841
+        crud.user_x_role.create(db, obj_in=superuser_role_in)
         logging.info('End Create Superuser')
-
-    logging.info('MINIO Bucket Creating done')
 
 
 if __name__ == '__main__':

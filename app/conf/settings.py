@@ -10,23 +10,20 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "2.0.1"
     PROJECT_NAME: str = "mathbesedina - сайт Бесединой О.С."
 
-    # API
     API_V1_STR: str = "/api/v1"
 
-    #HOST: str = "0.0.0.0"
     HOST: str = "localhost"
     PORT: int = os.getenv("PORT", 8000)
 
-    # Corses
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
-
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        elif isinstance(v, (list, str)):
-            return v
-        raise ValueError(v)
+    # BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    #
+    # @validator("BACKEND_CORS_ORIGINS", pre=True)
+    # def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    #     if isinstance(v, str) and not v.startswith("["):
+    #         return [i.strip() for i in v.split(",")]
+    #     elif isinstance(v, (list, str)):
+    #         return v
+    #     raise ValueError(v)
 
     # PostgreSQL Configuration
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "mathsite")
@@ -58,15 +55,9 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr = "admin@math.ru"
     FIRST_SUPERUSER_PASSWORD: str = "123123"
 
-    # https://indominusbyte.github.io/fastapi-jwt-auth/configuration/cookies/
-
-    geo_data_by_ip = "https://geolocation-db.com/json/{ip}&position=true"
-    CREDENTIALS_FILE: str = os.getenv('CREDENTIALS_FILE', '../app/config/skins-326215-94ed820652d8.json')
-    SPREADSHEET_SERVICE_MAIL = 'skins.data@gmail.com'
     MAX_COLUMNS_SPREADSHEET = 50
 
     # Minio
-    # MINIO_ADDR = os.getenv("MINIO_ADDR", "65.21.105.105:9000")
     MINIO_ADDR = os.getenv("MINIO_ADDR", "0.0.0.0:9000")
     MINIO_ROOT_USER = os.getenv("MINIO_ROOT_USER", "minio")
     MINIO_ROOT_PASSWORD = os.getenv("MINIO_ROOT_PASSWORD", "minio123")
@@ -80,7 +71,6 @@ class Settings(BaseSettings):
 
     # Sentry
     ON_PRODUCTION: bool = os.getenv('ON_PRODUCTION', True)  # Выставить на локальных машинах False
-    SENTRY_KEY = os.getenv('SENTRY_KEY', "https://16b191a5b9754e308daaf8978d73714c@o1059794.ingest.sentry.io/6048694")
     SENTRY_RELEASE_VERSION: Optional[str] = None
 
     @validator("SENTRY_RELEASE_VERSION", pre=True)
