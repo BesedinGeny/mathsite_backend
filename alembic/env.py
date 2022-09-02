@@ -90,6 +90,7 @@ def run_migrations_online():
 
         connection.execute('CREATE SCHEMA IF NOT EXISTS users')
         connection.execute('CREATE SCHEMA IF NOT EXISTS security')
+        connection.execute('CREATE SCHEMA IF NOT EXISTS data')
 
         with context.begin_transaction():
             context.run_migrations()
