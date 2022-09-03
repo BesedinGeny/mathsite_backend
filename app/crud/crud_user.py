@@ -16,7 +16,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_username(self, db: Session, username: str) -> Optional[User]:  # noqa
         return db.query(User).where(User.username == username).first()
 
-    def create(self, db: Session, *, obj_in: UserCreate, with_commit: bool = True) -> User:
+    def create(self, db: Session, obj_in: UserCreate, with_commit: bool = True) -> User:
 
         db_obj = User(
             email=obj_in.email,
@@ -27,6 +27,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             created_at=datetime.datetime.now(),
             last_login_at=datetime.datetime.now()
         )
+        # fixme: add user_x_role -_-
         if obj_in.username:
             db_obj.username = obj_in.username
 
@@ -38,7 +39,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     def update(
-            self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
+            self, db: Session, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
     ) -> UserUpdate:
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -61,7 +62,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def is_superuser(self, user: User) -> bool:  # noqa
         return user.is_superuser
 
-    def login_via_soc_nets(self, db: Session, *, username: str, access_token: str or None = None):
+    def login_via_soc_nets(self, db: Session, username: str, access_token: str or None = None):
         user_in_db = db.query(User).where(User.username == username).first()
         data = {"last_login_at": str(datetime.datetime.now())}
         if access_token:

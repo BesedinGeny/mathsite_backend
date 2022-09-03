@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from fastapi import HTTPException
 from passlib.context import CryptContext
@@ -17,7 +17,12 @@ def get_password_hash(password: str or None) -> Optional[str]:
 	return pwd_context.hash(password)
 
 
-def check_for_permission(right: str, permissions: List[str]):
-	if right not in permissions:
-		raise HTTPException(detail="Method not allowed!",
-		                    status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+def check_for_permission(required_rights: str | Tuple, permissions: List[str]):
+	"""throw error if even one right not included in required permissions """
+	if isinstance(required_rights, str):
+		required_rights = (required_rights,)
+
+	for right in required_rights:
+		if right not in permissions:
+			raise HTTPException(detail="Method not allowed!",
+								status_code=status.HTTP_405_METHOD_NOT_ALLOWED)

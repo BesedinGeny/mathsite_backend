@@ -1,5 +1,6 @@
 import uvicorn as uvicorn
 from fastapi_jwt_auth import AuthJWT
+from fastapi_pagination import add_pagination
 
 from app.conf.settings import cookies_settings, settings
 
@@ -19,6 +20,10 @@ app = FastAPI(
 
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+
+add_pagination(app)
+
 
 origins = [
     "http://localhost",
@@ -40,7 +45,7 @@ def run():
                     host=settings.HOST,
                     port=settings.PORT)
     else:
-        uvicorn.run("app:app", host=settings.HOST, port=settings.PORT, reload=True)
+        uvicorn.run("main:app", host=settings.HOST, port=settings.PORT, reload=True)
 
 
 if __name__ == '__main__':

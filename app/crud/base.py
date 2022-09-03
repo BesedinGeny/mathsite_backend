@@ -29,15 +29,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 	def get_all(self, db: Session) -> Optional[ModelType]:
 		return db.query(self.model).all()
 	
-	# todo: mb deprecated
 	def get_multi(
-			self, db: Session, *, skip: int = 0, limit: int = 100
+			self, db: Session, skip: int = 0, limit: int = 100
 	) -> List[ModelType]:
 		return db.query(self.model).offset(skip).limit(limit).all()
 	
-	def create(self, db: Session, *,
-	           obj_in: CreateSchemaType,
-	           with_commit: bool = True) -> ModelType:
+	def create(
+			self,
+			db: Session,
+			obj_in: CreateSchemaType,
+			with_commit: bool = True
+	) -> ModelType:
 		obj_in_data = jsonable_encoder(obj_in)
 		db_obj = self.model(**obj_in_data)  # type: ignore
 		db.add(db_obj)
@@ -49,7 +51,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 	def update(
 			self,
 			db: Session,
-			*,
 			db_obj: ModelType,
 			obj_in: Union[UpdateSchemaType, Dict[str, Any]]
 	) -> ModelType:
@@ -66,13 +67,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 		db.refresh(db_obj)
 		return db_obj
 	
-	def remove(self, db: Session, *, obj_id: int, soft_delete=False) -> ModelType:
+	def remove(self, db: Session, obj_id: int, soft_delete=False) -> ModelType:
 		obj = db.query(self.model).filter(self.model.id == obj_id).first()
 		if soft_delete:
 			try:
 				obj.is_active = False
 			except Exception as e:
-				""" E объекта нет поля is_active"""
+				""" Object has no attr 'is_active' """
 				pass
 		else:
 			db.delete(obj)
