@@ -4,5 +4,5 @@ from app.models import *
 
 target_metadata = [
 	User.metadata, UserXRole.metadata, Role.metadata, Permission.metadata,
-	PermissionXRole.metadata
+	PermissionXRole.metadata, Textbook.metadata,
 ]
