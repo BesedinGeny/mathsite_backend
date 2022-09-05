@@ -35,6 +35,15 @@ def CRUDEndpointFactory(
         crud_obj: CRUDBase,
         permission_map: dict = default_permission_map  # noqa
 ):
+    """
+    :param Model: SQLAlchemy model class
+    :param CreateSchema: Pydantic create schema class
+    :param UpdateSchema: Pydantic update schema class
+    :param ResponseSchema: Pydantic response schema which will be returned from api
+    :param crud_obj: CRUD-object which implement crud logic
+    :param permission_map: Dict with keys 'single', 'list', 'create', 'update', 'delete' and values
+     like tuple of strs of permissions for each
+    """
     router = InferringRouter()
     ModelType = TypeVar("ModelType", bound=Model)
     CreateSchemaType = TypeVar("CreateSchemaType", bound=CreateSchema)
@@ -85,7 +94,7 @@ def CRUDEndpointFactory(
             return ResponseSchema.from_orm(created_obj)
 
         @router.put(__prefix)
-        def create(
+        def update(
                 self,
                 obj_id: int,
                 obj_in: UpdateSchemaType,
@@ -102,6 +111,18 @@ def CRUDEndpointFactory(
                 )
             created_obj = self.__crud_obj.update(db, model_obj, obj_in)
             return ResponseSchema.from_orm(created_obj)
+
+        @router.delete(__prefix)
+        def delete(
+                self,
+                obj_id: int,
+                db: Session = Depends(get_db),
+                permissions: list = Depends(get_current_user_permission_list)
+        ) -> ResponseSchemaType:
+            """ Delete object with id=obj_id from database if user has enough rights"""
+            check_for_permission(permission_map['delete'], permissions)
+            removed_obj = self.__crud_obj.remove(db, obj_id)
+            return removed_obj
 
     return router
 
