@@ -18,6 +18,8 @@ from app.schemas.role import RolesType
 
 router = APIRouter()
 
+# todo: refactor all -_-
+
 
 @router.get("/users_list", response_model=LimitOffsetPage[schemas.User])
 def get_users(

@@ -9,6 +9,7 @@ from app import crud as crud
 from app import models
 from app.conf.db.session import SessionLocal
 from app.conf.settings import settings
+from app.utils.security import check_for_permission
 
 
 def get_db() -> Generator:
@@ -59,3 +60,15 @@ async def get_current_user_permission_list(
         return []
     user_permissions = current_user.roles.role.permissions
     return [p.permission.name for p in user_permissions]
+
+
+def check_current_user_for_permission(
+        permissions_required: tuple
+):
+    # throw exception or return True if permission allowed
+    async def check_permissions(
+        users_permissions_list: list = Depends(get_current_user_permission_list)
+    ):
+        check_for_permission(permissions_required, users_permissions_list)
+        return True
+    return check_permissions
