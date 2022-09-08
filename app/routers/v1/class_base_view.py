@@ -9,21 +9,17 @@ from sqlalchemy.orm import Session
 
 from app.conf.db.base_tablename_class import Base
 
-# router = InferringRouter()
+from app.conf.permission_settings import Permissions
 from app.crud.base import CRUDBase
 from app.routers.deps import *
-from app.utils.security import check_for_permission
 
 # note: dict is mutable type, DANGER
-"""
-dont need permission to get objects, but need specific permission
-"""
 default_permission_map = {
     'single': (),
     'list': (),
-    'create': ('CREATE_OBJECT', ),
-    'update': ('EDIT_OBJECT', ),
-    'delete': ('BLOCK_OBJECT', ),
+    'create': (Permissions.CREATE_OBJECT.value,),
+    'update': (Permissions.EDIT_OBJECT.value,),
+    'delete': (Permissions.BLOCK_OBJECT.value,),
 }
 
 
@@ -131,4 +127,3 @@ router2 = CRUDEndpointFactory(
     UserResponse,
     user
 )
-

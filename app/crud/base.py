@@ -1,9 +1,11 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
 
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from starlette import status
 
 from app.conf.db.base_tablename_class import Base
 
@@ -69,6 +71,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 	
 	def remove(self, db: Session, obj_id: int, soft_delete=False) -> ModelType:
 		obj = db.query(self.model).filter(self.model.id == obj_id).first()
+		if not obj:
+			raise HTTPException(
+				detail=f"Object with id '{obj_id}' was not found, nothing to delete",
+				status_code=status.HTTP_400_BAD_REQUEST
+			)
 		if soft_delete:
 			try:
 				obj.is_active = False

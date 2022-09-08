@@ -20,6 +20,8 @@ router = APIRouter()
 
 # todo: refactor all -_-
 
+# note: probably some functionality could be replaced with CRUDEndpointFactory
+
 
 @router.get("/users_list", response_model=LimitOffsetPage[schemas.User])
 def get_users(
